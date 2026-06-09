@@ -568,6 +568,29 @@ app.get('/api/geocode/resolve', async (req, res) => {
   }
 });
 
+// DELETE /api/bl/all - DANGER: Deletes all BLs and photos
+app.delete('/api/bl/all', async (req, res) => {
+  try {
+    console.log('🚨 DANGER: Deleting all bordereaux and photos...');
+
+    // 1. Delete from DB
+    await dbRun('DELETE FROM bl');
+    await dbRun("DELETE FROM sqlite_sequence WHERE name='bl'"); // Reset autoincrement
+
+    // 2. Clean storage directory
+    await fs.emptyDir(STORAGE_PATH);
+    console.log('🗑️ Storage directory cleaned.');
+
+    console.log('✅ All data has been deleted.');
+
+    res.json({ success: true, message: 'Tous les bordereaux et photos ont été supprimés.' });
+
+  } catch (error) {
+    console.error('❌ Clear all data error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // ===== ERROR HANDLING =====
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Endpoint non trouvé' });

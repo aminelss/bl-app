@@ -120,4 +120,14 @@ export async function searchGeocodes(q) {
   }
 }
 
+export async function deleteAllBL() {
+  try {
+    const res = await api.delete('/bl/all');
+    return res.data;
+  } catch (error) {
+    console.error('Delete all error:', error.message);
+    return { success: false, error: error.message };
+  }
+}
+
 export default api;

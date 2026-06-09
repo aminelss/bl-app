@@ -32,31 +32,31 @@ export default function Menu({ onCreateBL, onHistory }) {
             style={{
               position: 'relative',
               overflow: 'hidden',
-              background: 'linear-gradient(135deg, #E30613 0%, #ff4d4d 100%)',
-              color: 'white',
+              background: 'transparent',
+              color: '#0E284B',
               borderRadius: '24px',
               padding: '28px 24px',
               display: 'flex',
               alignItems: 'center',
-              boxShadow: '0 12px 24px rgba(227, 6, 19, 0.25)',
+              boxShadow: 'none',
               cursor: 'pointer',
-              border: '1px solid rgba(255,255,255,0.2)',
+              border: '2px solid #0E284B',
               transition: 'transform 0.2s ease'
             }}
           >
             {/* Filigrane en arrière-plan */}
-            <div style={{ position: 'absolute', right: '-10px', bottom: '-20px', fontSize: '120px', opacity: 0.15, transform: 'rotate(-15deg)', pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', right: '-10px', bottom: '-20px', fontSize: '120px', opacity: 0.04, transform: 'rotate(-15deg)', pointerEvents: 'none' }}>
               📦
             </div>
             
-            <div style={{ fontSize: '2rem', marginRight: '20px', backgroundColor: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(10px)', borderRadius: '18px', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+            <div style={{ fontSize: '2rem', marginRight: '20px', backgroundColor: 'rgba(14, 40, 75, 0.08)', borderRadius: '18px', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               📸
             </div>
             <div style={{ flex: 1, zIndex: 1 }}>
-              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 'bold', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>Nouveau Bordereau</h2>
-              <p style={{ margin: '4px 0 0 0', fontSize: '0.95rem', opacity: 0.9 }}>Scanner et analyser un colis</p>
+              <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 'bold' }}>Nouveau Bordereau</h2>
+              <p style={{ margin: '4px 0 0 0', fontSize: '0.95rem', color: '#666' }}>Scanner et analyser un colis</p>
             </div>
-            <div style={{ fontSize: '2rem', opacity: 0.8, paddingLeft: '8px', zIndex: 1 }}>›</div>
+            <div style={{ fontSize: '2rem', color: '#0E284B', paddingLeft: '8px', zIndex: 1 }}>›</div>
           </div>
 
           {/* Carte Historique (Secondaire) */}
@@ -65,14 +65,14 @@ export default function Menu({ onCreateBL, onHistory }) {
             style={{
               position: 'relative',
               overflow: 'hidden',
-              background: '#ffffff',
+              background: 'transparent',
               color: '#0E284B',
               borderRadius: '24px',
               padding: '28px 24px',
               display: 'flex',
               alignItems: 'center',
-              boxShadow: '0 6px 16px rgba(0,0,0,0.06)',
-              border: '1px solid #f0f0f0',
+              boxShadow: 'none',
+              border: '2px solid #d1d5db',
               cursor: 'pointer',
               transition: 'transform 0.2s ease'
             }}
