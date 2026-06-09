@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { getBLToday, getAllBL } from '../api';
 import { formatDate, formatTime, getStatusBadge } from '../utils';
 import Map from '../components/Map';
-import Modal from '../components/Modal';
 import Loader from '../components/Loader';
 
-export default function History({ onBack }) {
+export default function History({ onBack, onSelectBL }) {
   const [tab, setTab] = useState('list'); // 'list' ou 'map'
   const [blList, setBlList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [statut, setStatut] = useState('tous');
-  const [selectedBL, setSelectedBL] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -116,7 +114,7 @@ export default function History({ onBack }) {
                   <div
                     key={bl.id}
                     className="bl-card"
-                    onClick={() => setSelectedBL(bl)}
+                    onClick={() => onSelectBL(bl)}
                     style={{
                       backgroundColor: '#fff',
                       border: '1px solid #e0e0e0',
@@ -181,16 +179,9 @@ export default function History({ onBack }) {
               <p>📭 Aucun point GPS trouvé</p>
             </div>
           ) : (
-            <Map blList={blList} />
+            <Map blList={blList} onMarkerClick={onSelectBL} />
           )}
         </div>
-      )}
-
-      {selectedBL && (
-        <Modal
-          bl={selectedBL}
-          onClose={() => setSelectedBL(null)}
-        />
       )}
 
       <button onClick={onBack} className="btn-back">

@@ -1,80 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { formatDate, getStatusBadge } from '../utils';
 
-export default function Modal({ bl, onClose }) {
+export default function Detail({ bl, onBack }) {
   const [photo, setPhoto] = useState(null);
-  const statusBadge = getStatusBadge(bl.statut);
 
   useEffect(() => {
-    if (bl.id) {
-      // Utilise l'URL de l'API configurée dynamiquement
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-      const photoUrl = `${apiUrl}/bl/${bl.id}/photo`;
+    if (bl?.id) {
+      // On récupère l'URL de base pour construire le lien vers la photo
+      const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/api$/, '');
+      const photoUrl = `${baseUrl}${bl.photo_path}`;
       setPhoto(photoUrl);
     }
-  }, [bl.id]);
+  }, [bl]);
 
-  if (!bl) return null;
+  if (!bl) {
+    return (
+      <div className="screen detail-screen" style={{ padding: '20px' }}>
+        <p>Aucun bordereau sélectionné.</p>
+        <button onClick={onBack} className="btn-back">🔙 Retour</button>
+      </div>
+    );
+  }
+
+  const statusBadge = getStatusBadge(bl.statut);
 
   return (
-    <div 
-      className="modal-overlay" 
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0, bottom: 0,
-        backgroundColor: 'rgba(14, 40, 75, 0.4)', // Bleu marin translucide
-        backdropFilter: 'blur(8px)', // Effet flouté à l'arrière
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '20px'
-      }}
-    >
-      <div 
-        className="modal-content" 
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: '#ffffff',
-          borderRadius: '24px',
-          width: '100%',
-          maxWidth: '500px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          boxShadow: '0 24px 48px rgba(0,0,0,0.2)',
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        {/* Header Modale collant */}
-        <div style={{ padding: '24px 24px 16px', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, backgroundColor: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
-          <div>
-            <h2 style={{ margin: '0 0 8px 0', fontSize: '1.6rem', color: '#0E284B', fontWeight: '800' }}>{bl.numero}</h2>
+    <div className="screen detail-screen" style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', position: 'sticky', top: 0, backgroundColor: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', zIndex: 10, borderBottom: '1px solid #e9ecef' }}>
+        <button 
+          onClick={onBack}
+          style={{ background: '#e9ecef', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '1.5rem', color: '#0E284B', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          ‹
+        </button>
+        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#0E284B', fontWeight: 'bold' }}>Détail du Bordereau</h2>
+      </div>
+
+      {/* Content */}
+      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        
+        {/* Main Info Card */}
+        <div style={{ backgroundColor: '#ffffff', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ margin: 0, fontSize: '1.4rem', color: '#0E284B', fontWeight: '800' }}>{bl.numero}</h3>
             <span style={{ backgroundColor: statusBadge.color, color: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold' }}>
               {statusBadge.label}
             </span>
           </div>
-          <button 
-            onClick={onClose}
-            style={{ background: '#f0f4f8', border: 'none', borderRadius: '50%', width: '40px', height: '40px', fontSize: '1.2rem', color: '#0E284B', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
-          >
-            ✕
-          </button>
-        </div>
-
-        <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          {/* Photo */}
           {photo && (
-            <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid #eee', backgroundColor: '#f9f9f9', display: 'flex', justifyContent: 'center' }}>
-              <img src={photo} alt={`BL ${bl.numero}`} style={{ width: '100%', maxHeight: '250px', objectFit: 'contain' }} />
+            <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #eee', backgroundColor: '#f9f9f9', display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <img src={photo} alt={`BL ${bl.numero}`} style={{ width: '100%', maxHeight: '300px', objectFit: 'contain' }} />
             </div>
           )}
 
-          {/* Encart IA */}
+          {/* AI Description */}
           {bl.description_ai && (
-            <div style={{ backgroundColor: '#f0f4f8', padding: '16px', borderRadius: '16px', border: '1px solid #e1e8f0', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+            <div style={{ backgroundColor: '#f0f4f8', padding: '16px', borderRadius: '12px', border: '1px solid #e1e8f0', display: 'flex', gap: '12px', alignItems: 'flex-start', marginBottom: '20px' }}>
               <span style={{ fontSize: '1.5rem' }}>✨</span>
               <div>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: '#3B82F6', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Analyse IA</p>
@@ -83,27 +66,24 @@ export default function Modal({ bl, onClose }) {
             </div>
           )}
 
-          {/* Détails Grille */}
+          {/* Details List */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-              <span style={{ fontSize: '1.4rem' }}>📍</span>
+              <span style={{ fontSize: '1.4rem', marginTop: '2px' }}>📍</span>
               <div>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: '#888', fontWeight: '600' }}>Destination</p>
                 <p style={{ margin: '2px 0 0 0', color: '#0E284B', fontWeight: '600', fontSize: '1.05rem' }}>{bl.adresse_destination}</p>
               </div>
             </div>
-
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-              <span style={{ fontSize: '1.4rem' }}>📅</span>
+              <span style={{ fontSize: '1.4rem', marginTop: '2px' }}>📅</span>
               <div>
                 <p style={{ margin: 0, fontSize: '0.85rem', color: '#888', fontWeight: '600' }}>Date de création</p>
                 <p style={{ margin: '2px 0 0 0', color: '#0E284B' }}>{formatDate(bl.date_creation)}</p>
               </div>
             </div>
-
             {(bl.poids || bl.dimensions) && (
-              <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8f9fa', padding: '12px 16px', borderRadius: '12px' }}>
+              <div style={{ display: 'flex', gap: '24px', backgroundColor: '#f8f9fa', padding: '12px 16px', borderRadius: '12px', border: '1px solid #eee' }}>
                 {bl.poids && (
                   <div>
                     <p style={{ margin: 0, fontSize: '0.85rem', color: '#888', fontWeight: '600' }}>Poids</p>
@@ -118,17 +98,15 @@ export default function Modal({ bl, onClose }) {
                 )}
               </div>
             )}
-
             {bl.info_complementaire && (
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                <span style={{ fontSize: '1.4rem' }}>ℹ️</span>
+                <span style={{ fontSize: '1.4rem', marginTop: '2px' }}>ℹ️</span>
                 <div>
                   <p style={{ margin: 0, fontSize: '0.85rem', color: '#888', fontWeight: '600' }}>Infos complémentaires</p>
                   <p style={{ margin: '2px 0 0 0', color: '#0E284B' }}>{bl.info_complementaire}</p>
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </div>

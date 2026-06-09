@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-export default function Map({ blList }) {
+export default function Map({ blList, onMarkerClick }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
 
@@ -98,6 +98,10 @@ export default function Map({ blList }) {
           </div>
         `)
         .addTo(mapInstance.current);
+
+      if (onMarkerClick) {
+        marker.on('click', () => onMarkerClick(bl));
+      }
 
       markerGroup.push(marker);
 

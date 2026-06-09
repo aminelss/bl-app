@@ -7,12 +7,14 @@ import History from './pages/History';
 import Menu from './pages/Menu';
 import Success from './pages/Success';
 import Login from './pages/Login';
+import Detail from './components/Detail';
 
 export default function App() {
   const [screen, setScreen] = useState('login');
   const [blData, setBlData] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [successData, setSuccessData] = useState(null);
+  const [selectedBL, setSelectedBL] = useState(null);
 
   return (
     <div className="app">
@@ -88,7 +90,17 @@ export default function App() {
       )}
 
       {screen === 'history' && (
-        <History onBack={() => setScreen('menu')} />
+        <History 
+          onBack={() => setScreen('menu')} 
+          onSelectBL={(bl) => {
+            setSelectedBL(bl);
+            setScreen('detail');
+          }}
+        />
+      )}
+
+      {screen === 'detail' && (
+        <Detail bl={selectedBL} onBack={() => setScreen('history')} />
       )}
     </div>
   );
