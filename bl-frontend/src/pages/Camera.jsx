@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Loader from '../components/Loader';
 
 export default function Camera({ onPhoto, onBack }) {
+    console.log('📸 Camera component mounted!');  // ← Ajoute ça
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
