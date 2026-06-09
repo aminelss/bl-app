@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Menu({ onCreateBL, onHistory }) {
+export default function Menu({ onCreateBL, onHistory, onLogout }) {
   // Formatage de la date du jour (ex: "mardi 14 juin")
   const today = new Date().toLocaleDateString('fr-FR', { 
     weekday: 'long', day: 'numeric', month: 'long' 
@@ -19,7 +19,7 @@ export default function Menu({ onCreateBL, onHistory }) {
           <img 
             src="https://bycogepart.fr/wp-content/uploads/2026/02/logo-cogepart-rvb-bleurouge.jpg" 
             alt="Logo Cogepart" 
-            style={{ height: '40px', objectFit: 'contain', backgroundColor: 'white', padding: '6px 12px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} 
+            style={{ height: '55px', objectFit: 'contain', backgroundColor: 'white', padding: '8px 14px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }} 
           />
         </div>
 
@@ -91,6 +91,16 @@ export default function Menu({ onCreateBL, onHistory }) {
             </div>
             <div style={{ fontSize: '2rem', color: '#ccc', paddingLeft: '8px', zIndex: 1 }}>›</div>
           </div>
+        </div>
+
+        {/* Bouton de déconnexion */}
+        <div style={{ marginTop: '40px', textAlign: 'center' }}>
+          <button 
+            onClick={onLogout}
+            style={{ background: 'transparent', color: '#E30613', border: '2px solid #E30613', borderRadius: '24px', padding: '12px 24px', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+          >
+            🚪 Déconnexion
+          </button>
         </div>
 
         <div className="menu-footer" style={{ textAlign: 'center', marginTop: '40px', color: '#aaa', fontSize: '0.85rem' }}>

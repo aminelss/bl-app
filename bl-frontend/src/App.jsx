@@ -26,6 +26,7 @@ export default function App() {
         <Menu
           onCreateBL={() => setScreen('camera')}
           onHistory={() => setScreen('history')}
+          onLogout={() => setScreen('login')}
         />
       )}
 
