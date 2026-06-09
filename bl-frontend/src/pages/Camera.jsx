@@ -11,38 +11,50 @@ export default function Camera({ onPhoto, onBack }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { 
-            facingMode,
-            width: { ideal: 1920 },
-            height: { ideal: 1440 }
-          }
-        });
+  console.log('🎥 useEffect mounted');
+  
+  const startCamera = async () => {
+    try {
+      console.log('📹 Getting user media...');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode }
+      });
 
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.onloadedmetadata = () => {
-            videoRef.current.play();
-            setStreaming(true);
-            setError(null);
-          };
-        }
-      } catch (err) {
-        setError('Impossible d\'accéder à la caméra. Vérifiez les permissions.');
-        console.error(err);
+      console.log('✅ Stream obtained:', stream);
+
+      if (videoRef.current) {
+        console.log('📺 Setting srcObject...');
+        videoRef.current.srcObject = stream;
+        
+        // Attendre que la vidéo soit prête
+        videoRef.current.addEventListener('loadedmetadata', () => {
+          console.log('🎬 Video loaded, playing...');
+          videoRef.current.play()
+            .then(() => {
+              console.log('▶️ Playing!');
+              setStreaming(true);
+              setError(null);
+            })
+            .catch(err => {
+              console.error('❌ Play error:', err);
+              setError(`Play error: ${err.message}`);
+            });
+        }, { once: true });
       }
-    };
+    } catch (err) {
+      console.error('❌ Camera error:', err);
+      setError(`Camera error: ${err.message}`);
+    }
+  };
 
-    startCamera();
+  startCamera();
 
-    return () => {
-      if (videoRef.current?.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach(t => t.stop());
-      }
-    };
-  }, [facingMode]);
+  return () => {
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+    }
+  };
+}, [facingMode]);
 
   const takePhoto = async () => {
     if (!canvasRef.current || !videoRef.current) return;
