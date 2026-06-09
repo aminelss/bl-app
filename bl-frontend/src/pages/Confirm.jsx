@@ -10,15 +10,20 @@ export default function Confirm({ data, photo, onSuccess, onBack }) {
   useEffect(() => {
     const getGPS = async () => {
       try {
-        const position = await new Promise((resolve, reject) => {
-          navigator.geolocation.getCurrentPosition(resolve, reject);
-        });
+        // Appel à la nouvelle route backend de géocodage Google Maps
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+        const response = await fetch(`${apiUrl}/geocode/resolve?address=${encodeURIComponent(data.adresse_destination)}`);
+        const result = await response.json();
 
-        setGpsCoords({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          adresse: `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`
-        });
+        if (result.success) {
+          setGpsCoords({
+            lat: result.lat,
+            lng: result.lng,
+            adresse: data.adresse_destination
+          });
+        } else {
+          throw new Error("Adresse introuvable sur la carte");
+        }
       } catch (err) {
         console.log('GPS error:', err.message);
         setGpsCoords({
@@ -30,7 +35,7 @@ export default function Confirm({ data, photo, onSuccess, onBack }) {
     };
 
     getGPS();
-  }, []);
+  }, [data.adresse_destination]);
 
   const handleCreate = async () => {
     if (!gpsCoords) {

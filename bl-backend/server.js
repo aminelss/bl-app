@@ -537,6 +537,37 @@ app.get('/api/geocode/search', async (req, res) => {
   }
 });
 
+// GET /api/geocode/resolve - Obtenir les coordonnées exactes (Google Geocoding)
+app.get('/api/geocode/resolve', async (req, res) => {
+  try {
+    const { address } = req.query;
+    if (!address) {
+      return res.status(400).json({ success: false, error: 'Adresse manquante' });
+    }
+
+    const response = await axios.get(
+      'https://maps.googleapis.com/maps/api/geocode/json',
+      {
+        params: {
+          address: address,
+          key: GOOGLE_PLACES_KEY
+        },
+        timeout: 5000
+      }
+    );
+
+    if (response.data.status === 'OK' && response.data.results.length > 0) {
+      const location = response.data.results[0].geometry.location;
+      res.json({ success: true, lat: location.lat, lng: location.lng });
+    } else {
+      res.json({ success: false, error: 'Adresse introuvable par Google Maps' });
+    }
+  } catch (error) {
+    console.error('⚠️ Geocode resolve error:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // ===== ERROR HANDLING =====
 app.use((req, res) => {
   res.status(404).json({ success: false, error: 'Endpoint non trouvé' });

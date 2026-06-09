@@ -29,9 +29,9 @@ export const formatTime = (dateString) => {
 export const getStatusBadge = (statut) => {
   switch (statut) {
     case 'créé':
-      return { label: '📝 Créé', color: '#FFA500' };
+      return { label: '📝 Créé', color: '#F59E0B' }; // Orange ambré plus doux
     case 'transmis au chauffeur':
-      return { label: '🚗 Transmis', color: '#28A745' };
+      return { label: '🚗 Transmis', color: '#3B82F6' }; // Bleu vif (fini le vert !)
     default:
       return { label: statut, color: '#6C757D' };
   }

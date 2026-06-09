@@ -6,15 +6,20 @@ import Confirm from './pages/Confirm';
 import History from './pages/History';
 import Menu from './pages/Menu';
 import Success from './pages/Success';
+import Login from './pages/Login';
 
 export default function App() {
-  const [screen, setScreen] = useState('menu');
+  const [screen, setScreen] = useState('login');
   const [blData, setBlData] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [successData, setSuccessData] = useState(null);
 
   return (
     <div className="app">
+      {screen === 'login' && (
+        <Login onLogin={() => setScreen('menu')} />
+      )}
+
       {screen === 'menu' && (
         <Menu
           onCreateBL={() => setScreen('camera')}
