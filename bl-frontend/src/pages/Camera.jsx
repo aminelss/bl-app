@@ -7,20 +7,52 @@ export default function Camera({ onPhoto, onBack }) {
   const [error, setError] = useState(null);
   const [facingMode, setFacingMode] = useState('environment');
 
-  useEffect(() => {
-    console.log('🎥 Camera starting...');
-    
-    navigator.mediaDevices.getUserMedia({ video: { facingMode } })
-      .then(stream => {
-        console.log('✅ Got stream');
-        videoRef.current.srcObject = stream;
-        videoRef.current.play().catch(e => console.error('Play error:', e));
-      })
-      .catch(err => {
-        console.error('❌ Error:', err);
-        setError(err.message);
+useEffect(() => {
+  console.log('🎥 useEffect mounted, facingMode:', facingMode);
+  
+  const startCamera = async () => {
+    try {
+      console.log('📹 Getting user media...');
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode }
       });
-  }, [facingMode]);
+
+      console.log('✅ Stream obtained:', stream);
+
+      if (videoRef.current) {
+        console.log('📺 Setting video.srcObject...');
+        videoRef.current.srcObject = stream;
+        
+        // Ajouter le listener AVANT de jouer
+        const playVideo = async () => {
+          console.log('🎬 Attempting to play...');
+          try {
+            await videoRef.current.play();
+            console.log('▶️ Video playing!');
+            setStreaming(true);
+            setError(null);
+          } catch (playErr) {
+            console.error('❌ Play failed:', playErr);
+            setError(`Play error: ${playErr.message}`);
+          }
+        };
+        
+        videoRef.current.onloadedmetadata = playVideo;
+      }
+    } catch (err) {
+      console.error('❌ Camera error:', err);
+      setError(`Camera error: ${err.message}`);
+    }
+  };
+
+  startCamera();
+
+  return () => {
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+    }
+  };
+}, [facingMode]);
 
   const takePhoto = () => {
     const ctx = canvasRef.current.getContext('2d');
